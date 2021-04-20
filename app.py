@@ -61,8 +61,8 @@ def add_articles():
 
     cursor.execute(sql, input_data)
     db.commit()
-    print(cursor.rowcout)
-    db.close()
+    print(cursor.rowcount)
+    # db.close()
     return redirect("/articles")
 
   else :
@@ -71,10 +71,10 @@ def add_articles():
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete(id):
   cursor = db.cursor()
-  sql = 'DELETE FROM topic WHERE id = %s;'
-  id = [id]
-  cursor.execute(sql, id)
-  db.commit
+  sql = 'DELETE FROM topic WHERE id = {};'.format(id)
+  cursor.execute(sql)
+  db.commit()
+  return redirect("/articles")
 
 if __name__ == '__main__':
   app.run()
