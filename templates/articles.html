@@ -1,4 +1,3 @@
-  
 {% extends "layouts.html" %}
 {% block body %}
     <div class="jumbotron text-center">
@@ -42,12 +41,11 @@
                           <td>{{ article[3] }}</td>
                           <td>{{ article[4] }}</td>
                           <td>
-                            <button type="button" class="btn btn-warning">Edit</button>
-                            <form action="/delete/{{article[0]}}" style="margin-top: 10%;" method="POST" onsubmit="return confirm('정말 삭제하겠습니까?')">
-                              <button type="submit" class="btn btn-danger">Delete</button>
+                            <a href="/{{article[0]}}/edit"></a><button type="button" class="btn btn-warning">Edit</button>
+                            <form action="/delete/{{article[0]}}" style="margin-top: 10%;" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?')">
+                              <button type="submit" class="btn btn-danger">DEL</button>
                             </form>
                           </td>
-                          
                         </tr>
                     {% endfor %}
                       </tbody>

@@ -14,7 +14,6 @@ db = pymysql.connect(
     db='busan'
 )
 
-
 @app.route('/', methods=['GET'])
 def index():
   # return "Hello World"
@@ -75,6 +74,18 @@ def delete(id):
   cursor.execute(sql)
   db.commit()
   return redirect("/articles")
+
+@app.route('/<int:id>/edit', methods =['GET', 'POST'])
+def edit(id):
+  cursor = db.cursor()
+  if request.method == "POST":
+    return "success"
+  else:
+    sql = "SELECT * FROM topic WHERE id = {}".format(id)
+    cursor.execute(sql)
+    topic = cursor.fetchone()
+    print(topic[1])
+    return render_template("edit_article.html", article = topic)
 
 if __name__ == '__main__':
   app.run()
