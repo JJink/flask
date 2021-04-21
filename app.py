@@ -1,5 +1,6 @@
 from flask import Flask , render_template, request, redirect
 from data import Articles
+from passlib.hash import sha256_crypt
 import pymysql
 
 app = Flask(__name__)
@@ -29,7 +30,7 @@ def articles():
   sql = 'SELECT * FROM topic;'
   cursor.execute(sql)
   topics = cursor.fetchall()
-  print(topics)
+  # print(topics)
   #articles = Articles()
   # print(articles[0]['title'])
   return render_template("articles.html", articles = topics)
@@ -40,7 +41,7 @@ def article(id):
   sql = 'SELECT * FROM topic WHERE id = {}'.format(id)
   cursor.execute(sql)
   topic = cursor.fetchone()
-  print(topic)
+  # print(topic)
   # articles = Articles()
   # article = articles[id-1]
   #print(articles[id-1])
@@ -79,13 +80,58 @@ def delete(id):
 def edit(id):
   cursor = db.cursor()
   if request.method == "POST":
-    return "success"
+    title = request.form['title']
+    desc = request.form['desc']
+    author = request.form['author']
+    sql = "UPDATE topic SET title = %s , desc = %s , author = %s  WHERE id = {};".format(id)
+    print(sql)
+    input_data = [title, desc, author]
+    cursor.execute(sql, input_data)
+    db.commit()
+    return redirect('/articles')
+
   else:
     sql = "SELECT * FROM topic WHERE id = {}".format(id)
     cursor.execute(sql)
     topic = cursor.fetchone()
-    print(topic[1])
+    # print(topic)
     return render_template("edit_articles.html", article = topic)
+
+@app.route('/register', methods = ['GET', 'POST'])
+def register():
+  cursor = db.cursor()
+  if request.method == "POST" :
+    name = request.form['name']
+    email = request.form['email']
+    username = request.form['username']
+    password = request.form['password']
+    password = sha256_crypt.encrypt(request.form['password'])
+    sql = "INSERT INTO users (name, email, username, password) VALUES (%s,%s,%s,%s)"
+    input_data = [name, email, username, password]
+    cursor.execute(sql, input_data)
+    db.commit()
+
+    return redirect('/articles')
+
+  else:
+    return render_template("register.html")
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+  cursor = db.cursor
+  if request.method == 'POST':
+    username = request.form['username']
+    userpw_1 = request.form[password]
+    sql = 'SELECT passord FROM users WHERE email = %s;'
+    input_data = [username]
+    cursor.execute(sql, input_data)
+    password = cursor.fetchone()
+    print(password[0])
+    if sha256_crypt.verify("userpw_1", "password[0]"):
+      return "success"
+
+  else:
+    return password[0]
 
 if __name__ == '__main__':
   app.run()
