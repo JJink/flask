@@ -85,7 +85,7 @@ def edit(id):
     cursor.execute(sql)
     topic = cursor.fetchone()
     print(topic[1])
-    return render_template("edit_article.html", article = topic)
+    return render_template("edit_articles.html", article = topic)
 
 if __name__ == '__main__':
   app.run()
